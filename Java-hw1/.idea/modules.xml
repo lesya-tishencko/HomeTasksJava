@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/trie.iml" filepath="$PROJECT_DIR$/.idea/modules/trie.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/trie_main.iml" filepath="$PROJECT_DIR$/.idea/modules/trie_main.iml" group="trie" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/trie_test.iml" filepath="$PROJECT_DIR$/.idea/modules/trie_test.iml" group="trie" />
+    </modules>
+  </component>
+</project>
