@@ -188,6 +188,7 @@ public class PrefixTreeTest {
         assertEquals(2, trie.size());
     }
 
+    @Test
     public void howManyStartsWithPrefixDouble() throws Exception {
         PrefixTree trie = new PrefixTree();
 
