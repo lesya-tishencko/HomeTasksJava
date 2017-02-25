@@ -61,21 +61,18 @@ public class PrefixTree implements Trie {
         if (!contains(element))
             return false;
         Vertex curr = root;
+        curr.postfixCount--;
         for (char ch: element.toCharArray()) {
-            curr.postfixCount--;
-            if (curr.postfixCount == 0) {
+            curr.next[ch].postfixCount--;
+            if (curr.next[ch].postfixCount == 0) {
                 Vertex pred = curr;
                 curr = curr.next[ch];
-                pred = null;
+                pred.next[ch] = null;
                 continue;
             }
             curr = curr.next[ch];
         }
-        curr.postfixCount--;
         curr.terminal = false;
-        if (curr.postfixCount == 0) {
-            curr = null;
-        }
         return true;
     }
 
