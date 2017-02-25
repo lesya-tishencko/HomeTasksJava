@@ -11,17 +11,17 @@ public class PrefixTreeTest {
     public void addGeneral() throws Exception {
         PrefixTree trie = new PrefixTree();
 
-        assertEquals(true, trie.add("He"));
-        assertEquals(true, trie.add("She"));
-        assertEquals(true, trie.add("His"));
-        assertEquals(true, trie.add("Her"));
-        assertEquals(false, trie.add("He"));
-        assertEquals(false, trie.add("H!s"));
-        assertEquals(false, trie.add(""));
-        assertEquals(false, trie.add("H1s"));
-        assertEquals(false, trie.add("Привет"));
-        assertEquals(true, trie.add("They"));
-        assertEquals(true,trie.add("Their"));
+        assertTrue(trie.add("He"));
+        assertTrue(trie.add("She"));
+        assertTrue(trie.add("His"));
+        assertTrue(trie.add("Her"));
+        assertFalse(trie.add("He"));
+        assertFalse(trie.add("H!s"));
+        assertFalse(trie.add(""));
+        assertFalse(trie.add("H1s"));
+        assertFalse(trie.add("Привет"));
+        assertTrue(trie.add("They"));
+        assertTrue(trie.add("Their"));
     }
 
     @Test
@@ -34,26 +34,26 @@ public class PrefixTreeTest {
         trie.add("They");
         trie.add("Their");
 
-        assertEquals(true, trie.contains("He"));
-        assertEquals(true, trie.contains("She"));
-        assertEquals(true, trie.contains("His"));
-        assertEquals(true, trie.contains("Her"));
-        assertEquals(false, trie.contains("Here"));
-        assertEquals(false, trie.contains("H!s"));
-        assertEquals(true, trie.contains("They"));
-        assertEquals(true,trie.contains("Their"));
+        assertTrue(trie.contains("He"));
+        assertTrue(trie.contains("She"));
+        assertTrue(trie.contains("His"));
+        assertTrue(trie.contains("Her"));
+        assertFalse(trie.contains("Here"));
+        assertFalse(trie.contains("H!s"));
+        assertTrue(trie.contains("They"));
+        assertTrue(trie.contains("Their"));
 
         trie.remove("He");
         trie.remove("They");
         trie.remove("He");
         trie.remove("Her");
 
-        assertEquals(false, trie.contains("He"));
-        assertEquals(true, trie.contains("She"));
-        assertEquals(true, trie.contains("His"));
-        assertEquals(false, trie.contains("Her"));
-        assertEquals(false, trie.contains("They"));
-        assertEquals(true,trie.contains("Their"));
+        assertFalse(trie.contains("He"));
+        assertTrue(trie.contains("She"));
+        assertTrue(trie.contains("His"));
+        assertFalse(trie.contains("Her"));
+        assertFalse(trie.contains("They"));
+        assertTrue(trie.contains("Their"));
     }
 
     @Test
@@ -87,10 +87,10 @@ public class PrefixTreeTest {
         trie.add("They");
         trie.add("Their");
 
-        assertEquals(true, trie.remove("He"));
-        assertEquals(false, trie.remove("He"));
-        assertEquals(false, trie.remove("H!s"));
-        assertEquals(true, trie.remove("They"));
+        assertTrue(trie.remove("He"));
+        assertFalse(trie.remove("He"));
+        assertFalse(trie.remove("H!s"));
+        assertTrue(trie.remove("They"));
     }
 
     @Test
@@ -159,12 +159,12 @@ public class PrefixTreeTest {
     public void addDouble() throws Exception {
         PrefixTree trie = new PrefixTree();
 
-        assertEquals(true, trie.add("blue"));
-        assertEquals(true, trie.add("blueberry"));
-        assertEquals(false, trie.add("blueberry"));
+        assertTrue(trie.add("blue"));
+        assertTrue(trie.add("blueberry"));
+        assertFalse(trie.add("blueberry"));
 
         trie.remove("blueberry");
-        assertEquals(true, trie.add("blueberry"));
+        assertTrue(trie.add("blueberry"));
     }
 
     @Test
