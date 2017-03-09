@@ -72,7 +72,7 @@ public class List {
     }
 
     public Pair getNextAndRemove() {
-        if (root == null)
+        if (root.next == null)
             return null;
 
         Pair result = new Pair(root);
