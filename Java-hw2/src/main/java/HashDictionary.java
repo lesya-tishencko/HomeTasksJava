@@ -1,56 +1,57 @@
 public class HashDictionary implements Dictionary {
 
-    private int tableSize = 128;
-    private List[] hashTable = new List[tableSize];
-    private int countKey = 0;
+    private List[] hashTable = new List[128];
+    private int size = 0;
 
     public HashDictionary() {
-        for (int i = 0; i < tableSize; i++)
+        for (int i = 0; i < hashTable.length; i++)
             hashTable[i] = new List();
     }
 
     public int size() {
-        return countKey;
+        return size;
     }
 
     public boolean contains(String key) {
-        int index = key.hashCode() % tableSize;
-        String result = hashTable[index].find(key);
-        return result != null;
+        int index = key.hashCode() % hashTable.length;
+        return hashTable[index].find(key) != null;
     }
 
     public String get(String key) {
-        int index = key.hashCode() % tableSize;
+        int index = key.hashCode() % hashTable.length;
         return hashTable[index].find(key);
     }
 
     public String put(String key, String value) {
-        int index = key.hashCode() % tableSize;
+        int index = key.hashCode() % hashTable.length;
         String result = hashTable[index].add(key, value);
         if (result == null) {
-            countKey++;
+            size++;
             rehash();
         }
         return result;
     }
 
     public String remove(String key) {
-        int index = key.hashCode() % tableSize;
+        int index = key.hashCode() % hashTable.length;
         String result = hashTable[index].delete(key);
         if (result != null)
-            countKey--;
+            size--;
         return result;
     }
 
     public void clear() {
         for (List node : hashTable)
             node.eraseAll();
-        countKey = 0;
+        hashTable = new List[128];
+        for (int i = 0; i < hashTable.length; i++)
+            hashTable[i] = new List();
+        size = 0;
     }
 
     private void rehash() {
-        if (countKey > 4 * tableSize / 3) {
-            tableSize *= 2;
+        if (size > 4 * hashTable.length / 3) {
+            int tableSize = hashTable.length *  2;
             List[] newHashTable = new List[tableSize];
             for (int i = 0; i < tableSize; i++)
                 newHashTable[i] = new List();

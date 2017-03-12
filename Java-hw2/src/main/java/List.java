@@ -1,11 +1,11 @@
 public class List {
 
-    public static class Pair {
+    public final static class Pair {
         String key = "", value = "";
 
-        public Pair(Node node) {
-            key = node.key;
-            value = node.value;
+        public Pair(String key, String value) {
+            this.key = key;
+            this.value = value;
         }
     }
 
@@ -49,7 +49,7 @@ public class List {
             current = current.next;
 
         if (current.next == null)
-            return value;
+            return null;
         value = current.next.value;
         current.next = current.next.next;
         return value;
@@ -75,7 +75,7 @@ public class List {
         if (root.next == null)
             return null;
 
-        Pair result = new Pair(root);
+        Pair result = new Pair(root.key, root.value);
         root = root.next;
         return result;
     }
