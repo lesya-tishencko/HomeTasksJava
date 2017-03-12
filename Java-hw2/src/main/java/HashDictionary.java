@@ -1,6 +1,8 @@
 public class HashDictionary implements Dictionary {
 
-    private List[] hashTable = new List[128];
+    private static int startTableSize = 128;
+
+    private List[] hashTable = new List[startTableSize];
     private int size = 0;
 
     public HashDictionary() {
@@ -43,7 +45,7 @@ public class HashDictionary implements Dictionary {
     public void clear() {
         for (List node : hashTable)
             node.eraseAll();
-        hashTable = new List[128];
+        hashTable = new List[startTableSize];
         for (int i = 0; i < hashTable.length; i++)
             hashTable[i] = new List();
         size = 0;
