@@ -1,5 +1,7 @@
 import org.junit.Test;
 
+import java.io.*;
+
 import static org.junit.Assert.*;
 
 /**
@@ -207,5 +209,51 @@ public class PrefixTreeTest {
 
         trie.add("blue");
         assertEquals(2, trie.howManyStartsWithPrefix("blue"));
+    }
+
+    @Test
+    public void serializeGeneral() throws Exception {
+        PrefixTree trie = new PrefixTree();
+
+        trie.add("blue");
+        trie.add("blueberry");
+        trie.add("bluebird");
+
+        trie.add("He");
+        trie.add("She");
+        trie.add("His");
+        trie.add("Her");
+        trie.add("They");
+        trie.add("Their");
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        trie.serialize(out);
+        assertTrue(out.size() > 0);
+
+        PrefixTree trieNew = new PrefixTree();
+        trieNew.deserialize(new ByteArrayInputStream(out.toByteArray()));
+
+        assertEquals(trie.size(), trieNew.size());
+        assertTrue(trieNew.contains("He"));
+        assertTrue(trieNew.contains("She"));
+        assertTrue(trieNew.contains("His"));
+        assertTrue(trieNew.contains("Her"));
+        assertTrue(trieNew.contains("They"));
+        assertTrue(trieNew.contains("Their"));
+        assertTrue(trieNew.contains("blueberry"));
+        assertTrue(trieNew.contains("blue"));
+        assertTrue(trieNew.contains("bluebird"));
+        assertEquals(trie.howManyStartsWithPrefix("blue"), trieNew.howManyStartsWithPrefix("blue"));
+        assertEquals(trie.howManyStartsWithPrefix("The"), trieNew.howManyStartsWithPrefix("The"));
+
+        assertTrue(trie.remove("blueberry"));
+        assertTrue(trieNew.contains("blueberry"));
+        assertNotEquals(trie.howManyStartsWithPrefix("blue"), trieNew.howManyStartsWithPrefix("blue"));
+        assertTrue(trieNew.remove("blueberry"));
+        assertEquals(trie.howManyStartsWithPrefix("blue"), trieNew.howManyStartsWithPrefix("blue"));
+
+        trie.deserialize(new ByteArrayInputStream(out.toByteArray()));
+        assertNotEquals(trieNew.size(), trie.size());
+        assertTrue(trie.contains("blueberry"));
     }
 }
