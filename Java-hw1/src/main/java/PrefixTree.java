@@ -65,10 +65,8 @@ public class PrefixTree implements Trie {
         for (char ch: element.toCharArray()) {
             curr.next[ch].postfixCount--;
             if (curr.next[ch].postfixCount == 0) {
-                Vertex pred = curr;
-                curr = curr.next[ch];
-                pred.next[ch] = null;
-                continue;
+                curr.next[ch] = null;
+                return true;
             }
             curr = curr.next[ch];
         }
