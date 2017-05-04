@@ -8,20 +8,20 @@ import static org.junit.Assert.*;
 public class BiFunctionTest {
     @Test
     public void compose() throws Exception {
-        BiFunction<Integer, Integer, Double> pow = new BiFunction<Integer, Integer, Double>() {
+        BiFunction<Integer, Integer, Long> pow = new BiFunction<Integer,Integer,Long>() {
             @Override
-            public Double apply(Integer arg1, Integer arg2) {
-                return Math.pow(arg1, arg2);
+            public Long apply(Integer arg1, Integer arg2) {
+                return Math.round(Math.pow(arg1, arg2));
             }
         };
-        Function <Double, String> doubleToStr = new Function<Double, String>() {
+        Function <Number, String> numToStr = new Function<Number, String>() {
             @Override
-            public String apply(Double from) {
-                return String.valueOf(Math.round(from));
+            public String apply(Number from) {
+                return String.valueOf(from);
             }
         };
-        assertEquals("10000000000", pow.compose(doubleToStr).apply(100000, 2));
-        assertEquals("10000000000", pow.compose(doubleToStr).apply(10, 10));
+        assertEquals("10000000000", pow.compose(numToStr).apply(100000, 2));
+        assertEquals("10000000000", pow.compose(numToStr).apply(10, 10));
     }
 
     @Test

@@ -1,11 +1,12 @@
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by lesya on 06.04.2017.
  */
 public class Collections {
-    public static <F, T> ArrayList<T> map(Iterable<F> from, Function<? super F, ? extends T> f) {
+    public static <F, T> List<T> map(Iterable<F> from, Function<? super F, ? extends T> f) {
         ArrayList<T> result = new ArrayList<T>();
         for (F elem : from)
             result.add(f.apply(elem));

@@ -1,6 +1,7 @@
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.function.*;
 
 import static org.junit.Assert.*;
 
@@ -17,7 +18,7 @@ public class PredicateTest {
             }
         };
         assertTrue(startWithUpper.not().apply("hello"));
-        assertTrue(startWithUpper.not().apply("Lesya Tishencko"));
+        assertFalse(startWithUpper.not().apply("Lesya Tishencko"));
     }
 
     @Test
@@ -32,8 +33,16 @@ public class PredicateTest {
                 return result;
             }
         };
+        Predicate<String> lazy = new Predicate<String>() {
+            @Override
+            public Boolean apply(String from) {
+                assert(0 != 0);
+                return true;
+            }
+        };
         assertFalse(allIsAlpha.and(Predicate.ALWAYS_TRUE).apply("Hello, world!"));
         assertFalse(allIsAlpha.and(Predicate.ALWAYS_FALSE).apply("Hello, world!"));
+        assertFalse(allIsAlpha.and(lazy).apply("Lazy pridacate checking"));
     }
 
     @Test
@@ -58,9 +67,24 @@ public class PredicateTest {
                 return result;
             }
         };
+        Predicate<String> lazy = new Predicate<String>() {
+            @Override
+            public Boolean apply(String from) {
+                assert(0 != 0);
+                return true;
+            }
+        };
+        Predicate<Object> notNull = new Predicate<Object>() {
+            @Override
+            public Boolean apply(Object obj) {
+                return obj != null;
+            }
+        };
         assertTrue(allIsAlpha.or(allIsDigit).apply("12345"));
         assertTrue(allIsAlpha.or(allIsDigit).apply("LesyaTishencko"));
         assertFalse(allIsAlpha.or(allIsDigit).apply("RP Pi 2B"));
+        assertTrue(allIsAlpha.or(lazy).apply("LazyPredicateChecking"));
+        assertTrue(allIsAlpha.or(notNull).apply("091195"));
     }
 
 }

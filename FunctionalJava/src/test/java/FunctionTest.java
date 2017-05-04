@@ -1,6 +1,8 @@
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Locale;
+
 import static org.junit.Assert.*;
 
 /**
@@ -27,19 +29,19 @@ public class FunctionTest {
                 return Integer.valueOf(number);
             }
         };
-        Function<Double, String> addZeroChar = new Function<Double, String>() {
+        Function<Number, String> addZeroChar = new Function<Number, String>() {
             @Override
-            public String apply(Double from) {
-                return String.valueOf((int)Math.ceil(from)) + "0";
+            public String apply(Number from) {
+                return String.valueOf(from) + "0";
             }
         };
-        Function<Integer, Double> sqrt = new Function<Integer, Double>() {
+        Function<Integer, Long> sqrt = new Function<Integer, Long>() {
             @Override
-            public Double apply(Integer from) {
-                return new Double(from * from);
+            public Long apply(Integer from) {
+                return Long.valueOf(from * from);
             }
         };
-        assertEquals(new Double(81), intFromStr.compose(sqrt).apply("-9"));
+        assertEquals(new Long(81), intFromStr.compose(sqrt).apply("-9"));
         assertEquals("810", sqrt.compose(addZeroChar).apply(-9));
         assertEquals(new Integer(810), sqrt.compose(addZeroChar.compose(intFromStr)).apply(-9));
     }

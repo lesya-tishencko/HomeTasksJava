@@ -10,9 +10,9 @@ import static org.junit.Assert.assertEquals;
 public class CollectionsTest {
     @Test
     public void map() throws Exception {
-        Function<Integer, String> intToStr = new Function<Integer, String>() {
+        Function<Number, String> intToStr = new Function<Number, String>() {
             @Override
-            public String apply(Integer from) {
+            public String apply(Number from) {
                 return from.toString();
             }
         };
