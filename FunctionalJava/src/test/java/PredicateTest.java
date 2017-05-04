@@ -16,8 +16,8 @@ public class PredicateTest {
                 return Character.isUpperCase(from.toCharArray()[0]);
             }
         };
-        assertEquals(true, startWithUpper.not().apply("hello"));
-        assertEquals(false, startWithUpper.not().apply("Lesya Tishencko"));
+        assertTrue(startWithUpper.not().apply("hello"));
+        assertTrue(startWithUpper.not().apply("Lesya Tishencko"));
     }
 
     @Test
@@ -32,8 +32,8 @@ public class PredicateTest {
                 return result;
             }
         };
-        assertEquals(false, allIsAlpha.and(Predicate.ALWAYS_TRUE).apply("Hello, world!"));
-        assertEquals(false, allIsAlpha.and(Predicate.ALWAYS_FALSE).apply("Hello, world!"));
+        assertFalse(allIsAlpha.and(Predicate.ALWAYS_TRUE).apply("Hello, world!"));
+        assertFalse(allIsAlpha.and(Predicate.ALWAYS_FALSE).apply("Hello, world!"));
     }
 
     @Test
@@ -58,9 +58,9 @@ public class PredicateTest {
                 return result;
             }
         };
-        assertEquals(true, allIsAlpha.or(allIsDigit).apply("12345"));
-        assertEquals(true, allIsAlpha.or(allIsDigit).apply("LesyaTishencko"));
-        assertEquals(false, allIsAlpha.or(allIsDigit).apply("RP Pi 2B"));
+        assertTrue(allIsAlpha.or(allIsDigit).apply("12345"));
+        assertTrue(allIsAlpha.or(allIsDigit).apply("LesyaTishencko"));
+        assertFalse(allIsAlpha.or(allIsDigit).apply("RP Pi 2B"));
     }
 
 }

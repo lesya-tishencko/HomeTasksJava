@@ -5,20 +5,16 @@ import java.util.Iterator;
  * Created by lesya on 06.04.2017.
  */
 public class Collections {
-    public static <F, T> Iterable<T> map(Iterable<F> from, Function<? super F, ? extends T> f) {
+    public static <F, T> ArrayList<T> map(Iterable<F> from, Function<? super F, ? extends T> f) {
         ArrayList<T> result = new ArrayList<T>();
-        Iterator<F> it = from.iterator();
-        while (it.hasNext()) {
-            result.add(f.apply(it.next()));
-        }
+        for (F elem : from)
+            result.add(f.apply(elem));
         return result;
     }
 
     public static <T> Iterable<T> filter(Iterable<T> from, Predicate<? super T> p) {
         ArrayList<T> result = new ArrayList<T>();
-        Iterator<T> it = from.iterator();
-        while (it.hasNext()) {
-            T elem = it.next();
+        for (T elem : from) {
             if (p.apply(elem))
                 result.add(elem);
         }
@@ -27,9 +23,7 @@ public class Collections {
 
     public static <T> Iterable<T> takeWhile(Iterable<T> from, Predicate<? super T> p) {
         ArrayList<T> result = new ArrayList<T>();
-        Iterator<T> it = from.iterator();
-        while (it.hasNext()) {
-            T elem = it.next();
+        for (T elem : from) {
             if (!p.apply(elem))
                 break;
             result.add(elem);
