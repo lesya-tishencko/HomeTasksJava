@@ -39,7 +39,11 @@ public final class Injector {
             Constructor currentConstructor = params.get(index).getConstructors()[0];
             Class[] current = currentConstructor.getParameterTypes();
             if (current.length != 0) {
-                params.addAll(Arrays.asList(current));
+                for (Class clazz : current) {
+                    if (params.indexOf(clazz) < 0) {
+                        params.add(clazz);
+                    }
+                }
             } else {
                 dependency.put(params.get(index), params.get(index).newInstance());
             }
