@@ -46,16 +46,17 @@ public final class Injector {
             Class[] types = constructor.getParameterTypes();
             List<Object> args = new ArrayList<>();
             for (Class type : types) {
-                Object arg = null;
+                Class final_ = null;
                 for (Class candidate : implClasses) {
-                    if (type.isAssignableFrom(candidate))
-                        if (arg != null)
+                    if (type.isAssignableFrom(candidate)) {
+                        if (final_ != null)
                             throw new AmbiguousImplementationException();
-                    arg = init(candidate, implClasses, neededClasses);
+                        final_ = candidate;
+                    }
                 }
-                if (arg == null)
+                if (final_ == null)
                     throw new ImplementationNotFoundException();
-                args.add(arg);
+                args.add(init(final_, implClasses, neededClasses));
             }
             neededClasses.remove(clazz);
             dependency.put(clazz, clazz.getConstructor(types).newInstance(args.toArray()));
