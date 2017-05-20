@@ -35,8 +35,8 @@ public class TestInjector {
     @Test
     public void injectorShouldBeAmbigous() throws Exception {
         List<String> collect = new ArrayList<>();
-        collect.add("ru.spbau.mit.testClasses.InterfaceImpl");
-        collect.add("ru.spbau.mit.testClasses.Interface");
+        collect.add("ru.spbau.mit.testClasses.InterfaceImpl1");
+        collect.add("ru.spbau.mit.testClasses.InterfaceImpl2");
         try {
             Object object = Injector.initialize("ru.spbau.mit.testClasses.ClassWithTwoDependency", collect);
         }
