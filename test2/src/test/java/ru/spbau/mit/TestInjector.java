@@ -33,6 +33,19 @@ public class TestInjector {
     }
 
     @Test
+    public void injectorShouldBeAmbigous() throws Exception {
+        List<String> collect = new ArrayList<>();
+        collect.add("ru.spbau.mit.testClasses.InterfaceImpl");
+        collect.add("ru.spbau.mit.testClasses.Interface");
+        try {
+            Object object = Injector.initialize("ru.spbau.mit.testClasses.ClassWithTwoDependency", collect);
+        }
+        catch (AmbiguousImplementationException e) {
+            assertNotNull(e);
+        }
+    }
+
+    @Test
     public void injectorShouldInitializeClassWithOneInterfaceDependency()
             throws Exception {
         Object object = Injector.initialize(
