@@ -37,34 +37,31 @@ public final class Injector {
             IllegalAccessException, InvocationTargetException,
             InstantiationException, InjectionCycleException {
 
-        if (params.indexOf(clazz.getCanonicalName()) < 0) {
-            params.add(clazz);
-
+        if (dependency.get(clazz) == null) {
             if (neededClasses.contains(clazz)) {
                 throw new InjectionCycleException();
             }
+            neededClasses.add(clazz);
             Constructor constructor = clazz.getConstructors()[0];
             Class[] types = constructor.getParameterTypes();
             List<Object> args = new ArrayList<>();
-            neededClasses.addAll(Arrays.asList(types));
             for (Class type : types) {
                 Object arg = null;
                 for (Class candidate : implClasses) {
-                    if (candidate.isAssignableFrom(type))
+                    if (type.isAssignableFrom(candidate))
                         if (arg != null)
                             throw new AmbiguousImplementationException();
-                    neededClasses.remove(candidate);
                     arg = init(candidate, implClasses, neededClasses);
                 }
                 if (arg == null)
                     throw new ImplementationNotFoundException();
                 args.add(arg);
             }
+            neededClasses.remove(clazz);
             dependency.put(clazz, clazz.getConstructor(types).newInstance(args.toArray()));
         }
         return dependency.get(clazz);
     }
 
     private static HashMap<Class, Object> dependency = new LinkedHashMap<>();
-    private static List<Class> params = new ArrayList<>();
 }
