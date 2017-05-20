@@ -18,60 +18,53 @@ public final class Injector {
      * `implementationClassNames` for concrete dependencies.
      */
     public static Object initialize(String rootClassName, List<String> implementationClassNames) throws ClassNotFoundException,
-            AmbiguousImplementationException,
-            ImplementationNotFoundException,
-            InjectionCycleException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+            AmbiguousImplementationException, ImplementationNotFoundException,
+            InjectionCycleException, IllegalAccessException,
+            InstantiationException, NoSuchMethodException,
+            InvocationTargetException {
 
         List<Class> implClasses = new ArrayList<>();
         for (String name : implementationClassNames) {
             implClasses.add(Class.forName(name));
         }
 
-        HashMap<Class, Object> dependency = new LinkedHashMap<Class, Object>();
         Class target = Class.forName(rootClassName);
-        List<Class> params = new ArrayList<>();
-        params.add(target);
-        params.addAll(implClasses);
-        List<Constructor> constructors = new ArrayList<>();
-
-        int index = 0;
-        while (index < params.size()) {
-            Constructor currentConstructor = params.get(index).getConstructors()[0];
-            Class[] current = currentConstructor.getParameterTypes();
-            if (current.length != 0) {
-                for (Class clazz : current) {
-                    if (params.indexOf(clazz) < 0) {
-                        params.add(clazz);
-                    }
-                }
-            } else {
-                dependency.put(params.get(index), params.get(index).newInstance());
-            }
-            constructors.add(currentConstructor);
-            index++;
-        }
-
-
-        for (int i = params.size() - 1; i >= 0; i--) {
-            if (dependency.get(params.get(i)) == null) {
-                Class[] types = constructors.get(i).getParameterTypes();
-                List<Object> args = new ArrayList<>();
-                for (Class type : types) {
-                    Object arg = null;
-                    for (Class candidate : params) {
-                        if (candidate.isAssignableFrom(type))
-                            if (arg != null)
-                                throw new AmbiguousImplementationException();
-                            arg = dependency.get(candidate);
-                    }
-                    if (arg == null)
-                        throw new ImplementationNotFoundException();
-                    args.add(arg);
-                }
-                dependency.put(params.get(i), params.get(i).getConstructor(types).newInstance(args.toArray()));
-            }
-        }
-
-        return dependency.get(target);
+        return init(target, implClasses, new LinkedHashSet<>());
     }
+
+    private static Object init(Class clazz, List<Class> implClasses, HashSet<Class> neededClasses) throws AmbiguousImplementationException,
+            ImplementationNotFoundException, NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException,
+            InstantiationException, InjectionCycleException {
+
+        if (params.indexOf(clazz.getCanonicalName()) < 0) {
+            params.add(clazz);
+
+            if (neededClasses.contains(clazz)) {
+                throw new InjectionCycleException();
+            }
+            Constructor constructor = clazz.getConstructors()[0];
+            Class[] types = constructor.getParameterTypes();
+            List<Object> args = new ArrayList<>();
+            neededClasses.addAll(Arrays.asList(types));
+            for (Class type : types) {
+                Object arg = null;
+                for (Class candidate : implClasses) {
+                    if (candidate.isAssignableFrom(type))
+                        if (arg != null)
+                            throw new AmbiguousImplementationException();
+                    neededClasses.remove(candidate);
+                    arg = init(candidate, implClasses, neededClasses);
+                }
+                if (arg == null)
+                    throw new ImplementationNotFoundException();
+                args.add(arg);
+            }
+            dependency.put(clazz, clazz.getConstructor(types).newInstance(args.toArray()));
+        }
+        return dependency.get(clazz);
+    }
+
+    private static HashMap<Class, Object> dependency = new LinkedHashMap<>();
+    private static List<Class> params = new ArrayList<>();
 }
