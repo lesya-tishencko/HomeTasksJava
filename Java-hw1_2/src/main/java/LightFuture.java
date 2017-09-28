@@ -10,7 +10,7 @@ public class LightFuture<X> {
     }
 
     public boolean isReady() {
-        return result != null;
+        return result != null || exception != null;
     }
 
     public X get() throws LightExecutionException {
