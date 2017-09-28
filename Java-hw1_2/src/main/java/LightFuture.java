@@ -13,21 +13,18 @@ public class LightFuture<X> {
         return result != null;
     }
 
-    public X get() throws LightExecutionException, InterruptedException {
+    public X get() throws LightExecutionException {
         if (isReady()) {
             return result;
         }
         try {
-            Thread task = new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        result = function.get();
-                    } catch (Throwable exc) {
-                        exception = new LightExecutionException();
-                    }
+            Thread task = new Thread(() -> {
+                try {
+                    result = function.get();
+                } catch (Throwable exc) {
+                    exception = new LightExecutionException();
                 }
-            };
+            });
             task.start();
             task.join();
         } catch (InterruptedException interrupt) {
@@ -39,8 +36,8 @@ public class LightFuture<X> {
         }
     }
 
-    public <Y> LightFuture<Y> thenApply(Function<? super X, ? extends Y> fun) throws LightExecutionException {
-        return new LightFuture<Y>(new Supplier<Y>() {
+    public <Y> LightFuture<Y> thenApply(Function<? super X, ? extends Y> fun) {
+        return new LightFuture<>(new Supplier<Y>() {
             @Override
             public Y get() {
                 X arg = getArg();
@@ -62,5 +59,5 @@ public class LightFuture<X> {
 
     private X result = null;
     private LightExecutionException exception = null;
-    private Supplier<X> function;
+    private final Supplier<X> function;
 }

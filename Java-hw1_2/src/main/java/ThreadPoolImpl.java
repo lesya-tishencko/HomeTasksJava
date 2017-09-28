@@ -6,7 +6,7 @@ import java.util.function.Supplier;
  */
 public class ThreadPoolImpl implements ThreadPool {
     ThreadPoolImpl(int n) {
-        countOfNums = n;
+        int countOfNums = n;
         pool = new Thread[countOfNums];
         for (int i = 0; i < countOfNums; i++) {
             pool[i] = new Thread(new PoolWorker());
@@ -59,7 +59,6 @@ public class ThreadPoolImpl implements ThreadPool {
         }
     }
 
-    private int countOfNums;
-    private Thread[] pool;
-    private LinkedList<LightFuture> queue = new LinkedList();
+    private final Thread[] pool;
+    private final LinkedList<LightFuture> queue = new LinkedList();
 }

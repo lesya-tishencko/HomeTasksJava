@@ -14,7 +14,7 @@ public class LightFutureTest {
     @Test
     public void isReady() throws Exception {
         LightFuture<List<Integer>> future = new LightFuture<>(new Supplier<List<Integer>>() {
-            List<Integer> fibonacci = new ArrayList<>();
+            final List<Integer> fibonacci = new ArrayList<>();
             @Override
             public List<Integer> get() {
                 fibonacci.add(1);
@@ -32,14 +32,14 @@ public class LightFutureTest {
 
     @Test(expected = LightExecutionException.class)
     public void get() throws Exception {
-        LightFuture<Integer> futureWithException = new LightFuture<>(()->{return 3 / 0;});
+        LightFuture<Integer> futureWithException = new LightFuture<>(()-> 3 / 0);
         futureWithException.get();
     }
 
     @Test
     public void thenApply() throws Exception {
         LightFuture<List<Integer>> future = new LightFuture<>(new Supplier<List<Integer>>() {
-            List<Integer> fibonacci = new ArrayList<>();
+            final List<Integer> fibonacci = new ArrayList<>();
             @Override
             public List<Integer> get() {
                 fibonacci.add(1);
@@ -50,12 +50,7 @@ public class LightFutureTest {
                 return fibonacci;
             }
         });
-        Function<List<Integer>, Integer> function = new Function<List<Integer>, Integer>() {
-            @Override
-            public Integer apply(List<Integer> integers) {
-                return integers.stream().reduce((s1, s2) -> s1 + s2).get();
-            }
-        };
+        Function<List<Integer>, Integer> function = integers -> integers.stream().reduce((s1, s2) -> s1 + s2).get();
         LightFuture<Integer> future2 = future.thenApply(function);
         assertFalse(future.isReady());
         assertFalse(future2.isReady());
