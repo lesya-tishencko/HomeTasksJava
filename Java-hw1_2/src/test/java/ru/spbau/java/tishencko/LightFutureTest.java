@@ -1,9 +1,8 @@
 package ru.spbau.java.tishencko;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ru.spbau.java.tishencko.LightExecutionException;
-import ru.spbau.java.tishencko.LightFuture;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,9 +57,16 @@ public class LightFutureTest {
         LightFuture<List<Integer>> future = threadPool.push(fibSupplier);
         Function<List<Integer>, Integer> function = integers -> integers.stream().reduce((s1, s2) -> s1 + s2).get();
         LightFuture<Integer> future2 = future.thenApply(function);
-        assertEquals(function.apply((List<Integer>) future.get()), future2.get());
+        assertEquals(function.apply(future.get()), future2.get());
         LightFuture<Integer> future3 = future.thenApply(function);
         assertEquals(future2.get(), future3.get());
     }
 
+    @Test
+    public void testForNull() throws Exception {
+        Supplier<Integer> nullSupplier = () -> { return null; };
+        LightFuture<Integer> future = threadPool.push(nullSupplier);
+        assertNull(future.get());
+        assertTrue(future.isReady());
+    }
 }

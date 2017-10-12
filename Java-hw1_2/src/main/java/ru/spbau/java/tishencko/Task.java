@@ -11,11 +11,11 @@ import java.util.function.Supplier;
  */
 class Task<R> implements Runnable {
     private final Supplier<R> supplier;
-    private Consumer<Task> queueAdder;
+    private final Consumer<Task> queueAdder;
     private volatile R result = null;
     private volatile LightExecutionException exception = null;
     private boolean isReady = false;
-    private List<Task> dependent = new ArrayList<>();
+    private final List<Task> dependent = new ArrayList<>();
 
     public Task(Supplier<R> supplier, Consumer<Task> queueAdder) {
         this.supplier = supplier;

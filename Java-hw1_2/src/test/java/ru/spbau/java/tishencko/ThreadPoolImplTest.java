@@ -1,9 +1,6 @@
 package ru.spbau.java.tishencko;
 
 import org.junit.Test;
-import ru.spbau.java.tishencko.LightFuture;
-import ru.spbau.java.tishencko.ThreadPool;
-import ru.spbau.java.tishencko.ThreadPoolImpl;
 
 import java.util.concurrent.locks.ReentrantLock;
 
