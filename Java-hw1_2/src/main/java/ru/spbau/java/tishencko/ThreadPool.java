@@ -1,3 +1,5 @@
+package ru.spbau.java.tishencko;
+
 import java.util.function.Supplier;
 
 /**
@@ -5,5 +7,5 @@ import java.util.function.Supplier;
  */
 public interface ThreadPool {
     void shutdown();
-    <X> LightFuture<X> push(Supplier<X> fun);
+    <R> LightFuture<R> push(Supplier<R> fun);
 }

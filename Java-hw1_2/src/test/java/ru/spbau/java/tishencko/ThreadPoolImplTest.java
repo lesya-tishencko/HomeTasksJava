@@ -1,20 +1,25 @@
+package ru.spbau.java.tishencko;
+
 import org.junit.Test;
+import ru.spbau.java.tishencko.LightFuture;
+import ru.spbau.java.tishencko.ThreadPool;
+import ru.spbau.java.tishencko.ThreadPoolImpl;
 
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 
 import static org.junit.Assert.*;
 
 /**
  * Created by lesya on 27.09.2017.
  */
+
 public class ThreadPoolImplTest {
     @Test
     public void checkCountOfThreads() throws Exception {
         ThreadPool pool = new ThreadPoolImpl(4);
         ReentrantLock lock = new ReentrantLock();
         final int[] index = {0};
-        LightFuture<Boolean>[] futures = new LightFuture[4];
+        LightFuture[] futures = new LightFuture[4];
         for (int i = 0; i < 4; i++) {
             futures[i] = pool.push(() -> {
                 lock.lock();
@@ -24,9 +29,8 @@ public class ThreadPoolImplTest {
                 return true;
             });
         }
-        pool.shutdown();
         for (int i = 0; i < 4; i++) {
-            assertTrue(futures[i].get());
+            assertTrue((Boolean) futures[i].get());
         }
         assertEquals(4, index[0]);
     }
@@ -36,10 +40,9 @@ public class ThreadPoolImplTest {
         ThreadPool pool = new ThreadPoolImpl(2);
         LightFuture<Boolean> w1 = pool.push(()-> true);
         LightFuture<Boolean> w2 = pool.push(()-> false);
-        pool.shutdown();
-        assertFalse(w1.isReady());
-        assertFalse(w2.isReady());
         assertTrue(w1.get());
         assertFalse(w2.get());
+        assertTrue(w1.isReady());
+        assertTrue(w2.isReady());
     }
 }
