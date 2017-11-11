@@ -16,13 +16,14 @@ public class List<T> implements LockFreeList<T> {
     }
 
     public boolean isEmpty() {
-        return head.next.getReference().equals(tail);
+        Window<T> place = searchWindow(null, true);
+        return place.left == head && place.right == tail;
     }
 
     public void append(T value) {
         ListNode<T> newNode = new ListNode<T>(value);
         while (true) {
-            RightLeftNodes<T> place = search(value, false);
+            Window<T> place = searchWindow(value, true);
             ListNode<T> rightNode = place.right;
             ListNode<T> leftNode = place.left;
             newNode.next.set(rightNode, false);
@@ -34,28 +35,28 @@ public class List<T> implements LockFreeList<T> {
     public boolean remove(T value) {
         ListNode<T> leftNode, rightNode, rightNodeNext;
         while (true) {
-            RightLeftNodes<T> place = search(value, true);
+            Window<T> place = searchWindow(value, false);
             rightNode = place.right;
             leftNode = place.left;
-            if (rightNode.equals(tail) || !rightNode.key.equals(value))
+            if (rightNode == tail || !rightNode.key.equals(value))
                 return false;
             rightNodeNext = rightNode.next.getReference();
             if (rightNode.next.compareAndSet(rightNodeNext, rightNodeNext, false, true))
                 break;
         }
         if (!leftNode.next.compareAndSet(rightNode, rightNodeNext, false, false)) {
-            search(rightNode.key, true);
+            searchWindow(rightNode.key, false);
         }
         return true;
     }
 
     public boolean contains(T value) {
-        RightLeftNodes<T> place = search(value, true);
+        Window<T> place = searchWindow(value, false);
         ListNode<T> rightNode = place.right;
-        return !(rightNode.equals(tail) || !rightNode.key.equals(value));
+        return rightNode != tail && rightNode.key.equals(value);
     }
 
-    private RightLeftNodes<T> search(T value, boolean forSearch) {
+    private Window<T> searchWindow(T value, boolean searchLastElement) {
         ListNode<T> leftNode = null;
         ListNode<T> rightNode;
         ListNode<T> leftNodeNext = null;
@@ -69,15 +70,15 @@ public class List<T> implements LockFreeList<T> {
                     leftNodeNext = currNext;
                 }
                 curr = curr.next.getReference();
-                if (curr.equals(tail))
+                if (curr == tail)
                     break;
                 currNext = curr.next.get(mark);
-            } while (mark[0] || (forSearch && !curr.key.equals(value)));
+            } while (mark[0] || (!searchLastElement && !curr.key.equals(value)));
                 rightNode = curr;
 
             if (leftNode.next.compareAndSet(leftNodeNext, rightNode, false, false)) {
-                if (rightNode.equals(tail) || !rightNode.next.isMarked()) {
-                    return new RightLeftNodes<T>(rightNode, leftNode);
+                if (rightNode == tail || !rightNode.next.isMarked()) {
+                    return new Window<T>(rightNode, leftNode);
                 }
             }
         }
@@ -94,11 +95,11 @@ public class List<T> implements LockFreeList<T> {
         }
     }
 
-    private static class RightLeftNodes<U> {
+    private static class Window<U> {
         final ListNode<U> right;
         final ListNode<U> left;
 
-        RightLeftNodes(ListNode<U> right, ListNode<U> left) {
+        Window(ListNode<U> right, ListNode<U> left) {
             this.right = right;
             this.left = left;
         }
