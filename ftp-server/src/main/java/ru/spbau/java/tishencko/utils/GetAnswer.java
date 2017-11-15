@@ -19,8 +19,8 @@ public class GetAnswer {
 
     public void println() {
         System.out.println(size);
-        if (size > 0) {
-            System.out.println(bytes);
+        for (int i = 0; i < (int)size; i++) {
+            System.out.print((char)bytes[i]);
         }
     }
 }

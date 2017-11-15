@@ -30,7 +30,7 @@ public class FtpServerTest {
         client.connect();
         ListAnswer listAnswer = client.executeList("main");
         client.close();
-        assertEquals(2, listAnswer.getSize());
+        assertEquals(3, listAnswer.getSize());
         assertTrue(listAnswer.getNames().contains("hello.txt"));
         assertTrue(listAnswer.getNames().contains("goodbye.txt"));
         assertTrue(listAnswer.getNames().contains("directory"));
@@ -47,6 +47,10 @@ public class FtpServerTest {
         client.close();
         File file = new File(System.getProperty("user.dir") + "/ftp/main/goodbye.txt");
         assertEquals(file.length(), getAnswer.getSize());
-        assertEquals(Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "/ftp/main/goodbye.txt")), getAnswer.getBytes());
+        byte[] bytesExpected = Files.readAllBytes(Paths.get(System.getProperty("user.dir") + "/ftp/main/goodbye.txt"));
+        byte[] bytesActual = getAnswer.getBytes();
+        for (int i = 0; i < getAnswer.getSize(); i++) {
+            assertEquals(bytesExpected[i], bytesActual[i]);
+        }
     }
 }

@@ -24,17 +24,10 @@ public class Client implements AutoCloseable {
         this.port = port;
     }
 
-    public void connect() {
-        try {
-            clientSocket = new Socket(host, port);
-            in = new DataInputStream(clientSocket.getInputStream());
-            out = new DataOutputStream(clientSocket.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            close();
-        }
+    public void connect() throws IOException {
+        clientSocket = new Socket(host, port);
+        in = new DataInputStream(clientSocket.getInputStream());
+        out = new DataOutputStream(clientSocket.getOutputStream());
     }
 
 
@@ -55,7 +48,7 @@ public class Client implements AutoCloseable {
     }
 
     public GetAnswer executeGet(String path) throws IOException {
-        writeQuery(new Query(1, path));
+        writeQuery(new Query(2, path));
         GetAnswer answer = readGetAnswer();
         answer.println();
         return answer;
@@ -64,7 +57,6 @@ public class Client implements AutoCloseable {
     private void writeQuery(Query query) throws IOException {
         out.writeInt(query.getType());
         out.writeUTF(query.getPath());
-        out.flush();
     }
 
     public ListAnswer readListAnswer() throws IOException {
@@ -87,7 +79,7 @@ public class Client implements AutoCloseable {
 
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(System.in);
-        try (Client client = new Client("localhost", 21)) {
+        try (Client client = new Client("localhost", 4999)) {
             client.connect();
             boolean isContinue = true;
             while (isContinue) {
