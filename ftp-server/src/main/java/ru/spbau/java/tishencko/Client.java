@@ -47,16 +47,18 @@ public class Client implements AutoCloseable {
         }
     }
 
-    public void executeList(String path) throws IOException {
+    public ListAnswer executeList(String path) throws IOException {
         writeQuery(new Query(1, path));
         ListAnswer answer = readListAnswer();
         answer.println();
+        return answer;
     }
 
-    public void executeGet(String path) throws IOException {
+    public GetAnswer executeGet(String path) throws IOException {
         writeQuery(new Query(1, path));
         GetAnswer answer = readGetAnswer();
         answer.println();
+        return answer;
     }
 
     private void writeQuery(Query query) throws IOException {
@@ -93,10 +95,13 @@ public class Client implements AutoCloseable {
                 switch (command) {
                     case ":q":
                         isContinue = false;
+                        break;
                     case ":list":
                         client.executeList(scanner.next());
-                    case "get":
+                        break;
+                    case ":get":
                         client.executeGet(scanner.next());
+                        break;
                     default:
                         System.out.println("Unknown command");
                 }
