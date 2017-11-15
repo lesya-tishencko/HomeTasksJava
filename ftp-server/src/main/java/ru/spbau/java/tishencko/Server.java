@@ -6,10 +6,10 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Server implements AutoCloseable {
-    private int port;
-    private String workingDirectory;
-    private ExecutorService clientPool;
+class Server implements AutoCloseable {
+    private final int port;
+    private final String workingDirectory;
+    private final ExecutorService clientPool;
 
     Server(int portNumber, int maxNumberOfClients) {
         port = portNumber;

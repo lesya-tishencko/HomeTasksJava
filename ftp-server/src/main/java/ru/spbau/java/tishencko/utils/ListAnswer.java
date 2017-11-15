@@ -3,9 +3,9 @@ package ru.spbau.java.tishencko.utils;
 import java.util.List;
 
 public class ListAnswer {
-    private int size;
-    private List<String> names;
-    private List<Boolean> isDirectoryMarks;
+    private final int size;
+    private final List<String> names;
+    private final List<Boolean> isDirectoryMarks;
 
     public ListAnswer(int size, List<String> names, List<Boolean> isDirectoryMarks) {
         this.size = size;

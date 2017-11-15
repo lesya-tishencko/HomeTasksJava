@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import static org.junit.Assert.*;
 
 public class FtpServerTest {
-    private static Server server = new Server(4999, 20);
+    private static final Server server = new Server(4999, 20);
 
     @BeforeClass
     public static void initialize() {

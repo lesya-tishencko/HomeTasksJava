@@ -11,7 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandHandler {
+class CommandHandler {
     private String workingDirectory;
     private DataInputStream in;
     private DataOutputStream out;
@@ -53,12 +53,12 @@ public class CommandHandler {
         if (directory.isDirectory()) {
             listFiles = directory.listFiles();
         }
-        int size = listFiles.length;
+        int size = listFiles != null ? listFiles.length : 0;
         List<String> names = new ArrayList<>();
         List<Boolean> isDirectoryMarks = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            names.add(listFiles[i].getName());
-            isDirectoryMarks.add(listFiles[i].isDirectory());
+        for (File listFile : listFiles) {
+            names.add(listFile.getName());
+            isDirectoryMarks.add(listFile.isDirectory());
         }
         writeListAnswer(new ListAnswer(size, names, isDirectoryMarks));
     }

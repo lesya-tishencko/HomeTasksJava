@@ -1,8 +1,8 @@
 package ru.spbau.java.tishencko.utils;
 
 public class GetAnswer {
-    private long size;
-    private byte[] bytes;
+    private final long size;
+    private final byte[] bytes;
 
     public GetAnswer(long size, byte[] bytes) {
         this.size = size;

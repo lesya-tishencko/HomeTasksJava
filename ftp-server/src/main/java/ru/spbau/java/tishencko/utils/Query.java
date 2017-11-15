@@ -1,8 +1,8 @@
 package ru.spbau.java.tishencko.utils;
 
 public class Query {
-    private int type;
-    private String path;
+    private final int type;
+    private final String path;
 
     public Query(int type, String path) {
         this.type = type;

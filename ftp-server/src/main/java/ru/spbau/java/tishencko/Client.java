@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Client implements AutoCloseable {
+class Client implements AutoCloseable {
     private Socket clientSocket;
     private DataInputStream in;
     private DataOutputStream out;
-    private String host;
-    private int port;
+    private final String host;
+    private final int port;
 
     public Client(String host, int port) {
         this.host = host;
@@ -59,7 +59,7 @@ public class Client implements AutoCloseable {
         out.writeUTF(query.getPath());
     }
 
-    public ListAnswer readListAnswer() throws IOException {
+    private ListAnswer readListAnswer() throws IOException {
         int size = in.readInt();
         List<String> names = new ArrayList<>();
         List<Boolean> isDirectoryMarks = new ArrayList<>();
@@ -70,7 +70,7 @@ public class Client implements AutoCloseable {
         return new ListAnswer(size, names, isDirectoryMarks);
     }
 
-    public GetAnswer readGetAnswer() throws IOException {
+    private GetAnswer readGetAnswer() throws IOException {
         long size = in.readLong();
         byte[] bytes = new byte[(int) size];
         in.read(bytes);
