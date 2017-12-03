@@ -1,5 +1,6 @@
 package ru.spbau.java.tishencko;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,20 +12,21 @@ class Server implements AutoCloseable {
     private final String workingDirectory;
     private final ExecutorService clientPool;
 
-    Server(int portNumber, int maxNumberOfClients) {
+    Server(int portNumber, int maxNumberOfClients, String workingDirectory) {
         port = portNumber;
-        workingDirectory = System.getProperty("user.dir") + "/ftp";
+        this.workingDirectory = workingDirectory;
+        File workDirectory = new File(workingDirectory);
+        workDirectory.mkdirs();
         clientPool = Executors.newFixedThreadPool(maxNumberOfClients);
     }
 
     public void start() {
         Runnable serverTask = () -> {
-            try {
-                ServerSocket serverSocket = new ServerSocket(port);
+            try (ServerSocket serverSocket = new ServerSocket(port)) {
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
                     Runnable task = () -> {
-                        try (Socket currentSocket = clientSocket) {
+                        try {
                             CommandHandler handler = new CommandHandler(clientSocket, workingDirectory);
                             while (true) {
                                 handler.executeCommand();
@@ -54,7 +56,7 @@ class Server implements AutoCloseable {
     }
 
     public static void main(String[] args) {
-        Server server = new Server(4999, 20);
+        Server server = new Server(4999, 20, System.getProperty("user.dir") + "/ftp");
         server.start();
     }
 }

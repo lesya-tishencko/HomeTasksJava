@@ -1,8 +1,6 @@
 package ru.spbau.java.tishencko;
 
-import ru.spbau.java.tishencko.utils.GetAnswer;
-import ru.spbau.java.tishencko.utils.ListAnswer;
-import ru.spbau.java.tishencko.utils.Query;
+import ru.spbau.java.tishencko.utils.*;
 
 import java.io.*;
 import java.net.Socket;
@@ -12,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 class CommandHandler {
-    private String workingDirectory;
+    private final String workingDirectory;
     private DataInputStream in;
     private DataOutputStream out;
 
@@ -23,24 +21,27 @@ class CommandHandler {
     }
 
     public void executeCommand() throws IOException {
-        Query query;
+        FtpQuery ftpQuery;
         try {
-            query = readQuery();
+            ftpQuery = readQuery();
         } catch (EOFException e) {
             return;
         }
 
-        switch (query.getType()) {
-            case 1: executeListCommand(query.getPath());
-                        break;
-            case 2: executeGetCommand(query.getPath());
-                         break;
-            default: writeError("Type of query undefined");
+        switch (ftpQuery.getType()) {
+            case ListType: executeListCommand(ftpQuery.getPath());
+                           break;
+            case GetType: executeGetCommand(ftpQuery.getPath());
+                          break;
+            default: writeError("Type of ftpQuery undefined");
         }
     }
 
-    private Query readQuery() throws IOException {
-        return new Query(in.readInt(), in.readUTF());
+    private FtpQuery readQuery() throws IOException {
+        int type = in.readInt();
+        return type == 0 ?
+                new ListFtpQuery(in.readUTF()) :
+                new GetFtpQuery(in.readUTF());
     }
 
     private void writeError(String message) throws IOException {
@@ -53,17 +54,17 @@ class CommandHandler {
         if (directory.isDirectory()) {
             listFiles = directory.listFiles();
         }
-        int size = listFiles != null ? listFiles.length : 0;
+        int size = listFiles.length;
         List<String> names = new ArrayList<>();
         List<Boolean> isDirectoryMarks = new ArrayList<>();
         for (File listFile : listFiles) {
             names.add(listFile.getName());
             isDirectoryMarks.add(listFile.isDirectory());
         }
-        writeListAnswer(new ListAnswer(size, names, isDirectoryMarks));
+        writeListAnswer(new ListFtpAnswer(size, names, isDirectoryMarks));
     }
 
-    private void writeListAnswer(ListAnswer listAnswer) throws IOException {
+    private void writeListAnswer(ListFtpAnswer listAnswer) throws IOException {
         int size = listAnswer.getSize();
         out.writeInt(size);
         List<String> names = listAnswer.getNames();
@@ -81,10 +82,10 @@ class CommandHandler {
         if (size > 0) {
             bytes = Files.readAllBytes(Paths.get(workingDirectory + "/" + path));
         }
-        writeGetAnswer(new GetAnswer(size, bytes));
+        writeGetAnswer(new GetFtpAnswer(size, bytes));
     }
 
-    private void writeGetAnswer(GetAnswer getAnswer) throws IOException {
+    private void writeGetAnswer(GetFtpAnswer getAnswer) throws IOException {
         out.writeLong(getAnswer.getSize());
         out.write(getAnswer.getBytes());
     }
