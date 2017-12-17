@@ -1,7 +1,7 @@
 package ru.spbau.tishencko.torrent.query.tracker;
 
 import ru.spbau.tishencko.torrent.answer.tracker.Answer;
-import ru.spbau.tishencko.torrent.storer.TrackerDatabase;
+import ru.spbau.tishencko.torrent.entity.TrackerDatabase;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

@@ -36,26 +36,26 @@ public class ClientInterpreter {
         this.seed = seed;
     }
 
-    public boolean interpret() throws IOException {
+    public String interpret() throws IOException {
         Answer clientAnswer;
         String command = scanner.next();
         int id;
         switch (command) {
             case ":q":
-                return false;
+                return String.valueOf(false);
             case ":stat":
                 try {
                     id = Integer.valueOf(scanner.next());
                 } catch (NumberFormatException e) {
                     System.out.println("Unknown type of file's id");
-                    return true;
+                    return String.valueOf(true);
                 }
                 StatQuery stat = new StatQuery(id);
                 stat.write(out);
                 StatAnswer statAnswer = new StatAnswer(seed, new PrintWriter(System.out));
                 statAnswer.read(in);
                 statAnswer.execute();
-                return true;
+                return String.valueOf(true);
             case ":get":
                 int part;
                 try {
@@ -63,21 +63,21 @@ public class ClientInterpreter {
                     part = Integer.valueOf(scanner.next());
                 } catch (NumberFormatException e) {
                     System.out.println("Unknown type of file's id or file's part id");
-                    return true;
+                    return String.valueOf(true);
                 }
                 GetQuery get = new GetQuery(id, part);
                 get.write(out);
                 GetAnswer getAnswer = new GetAnswer(seed, id, part);
                 getAnswer.read(in);
                 getAnswer.execute();
-                return true;
+                return "Possible changing state";
             case ":list":
                 ListQuery list = new ListQuery();
                 list.write(out);
                 ListAnswer listAnswer = new ListAnswer(new PrintWriter(System.out));
                 listAnswer.read(in);
                 listAnswer.execute();
-                return true;
+                return String.valueOf(true);
             case ":upload":
                 String name = scanner.next();
                 java.io.File newFile = new java.io.File(name);
@@ -87,36 +87,37 @@ public class ClientInterpreter {
                     file = new File(name, size);
                 } catch (IOException e) {
                     System.out.println("File with this name doesn't exist");
-                    return true;
+                    return String.valueOf(true);
                 }
                 UploadQuery upload = new UploadQuery(name, size);
                 upload.write(out);
                 UploadAnswer uploadAnswer = new UploadAnswer(seed, file);
                 uploadAnswer.read(in);
                 uploadAnswer.execute();
-                return true;
+                return "Possible changing state";
             case ":sources":
                 try {
                     id = Integer.valueOf(scanner.next());
                 } catch (NumberFormatException e) {
                     System.out.println("Unknown type of file's id");
-                    return true;
+                    return String.valueOf(true);
                 }
                 SourcesQuery sources = new SourcesQuery(id);
                 sources.write(out);
                 SourcesAnswer sourcesAnswer = new SourcesAnswer(new PrintWriter(System.out));
                 sourcesAnswer.read(in);
                 sourcesAnswer.execute();
-                return true;
+                return String.valueOf(true);
             case ":update":
                 UpdateQuery update = new UpdateQuery(seed.getPort(), seed.getCount(), seed.getFileIds());
                 update.write(out);
                 UpdateAnswer updateAnswer = new UpdateAnswer(new PrintWriter(System.out));
                 updateAnswer.read(in);
                 updateAnswer.execute();
+                return String.valueOf(true);
             default:
                 System.out.println("Unknown command");
-                return true;
+                return String.valueOf(true);
         }
     }
 }

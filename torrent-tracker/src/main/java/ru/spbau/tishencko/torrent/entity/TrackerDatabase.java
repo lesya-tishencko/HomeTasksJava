@@ -1,8 +1,4 @@
-package ru.spbau.tishencko.torrent.storer;
-
-import ru.spbau.tishencko.torrent.entity.File;
-import ru.spbau.tishencko.torrent.entity.FileInfo;
-import ru.spbau.tishencko.torrent.entity.Seed;
+package ru.spbau.tishencko.torrent.entity;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

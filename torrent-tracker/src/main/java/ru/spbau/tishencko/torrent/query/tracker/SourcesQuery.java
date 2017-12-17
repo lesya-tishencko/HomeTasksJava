@@ -1,9 +1,8 @@
 package ru.spbau.tishencko.torrent.query.tracker;
 
-import com.sun.xml.internal.messaging.saaj.packaging.mime.util.LineInputStream;
 import ru.spbau.tishencko.torrent.answer.tracker.SourcesAnswer;
 import ru.spbau.tishencko.torrent.entity.Seed;
-import ru.spbau.tishencko.torrent.storer.TrackerDatabase;
+import ru.spbau.tishencko.torrent.entity.TrackerDatabase;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
