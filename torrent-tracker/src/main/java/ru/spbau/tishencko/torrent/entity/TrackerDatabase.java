@@ -7,8 +7,10 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TrackerDatabase {
+    private static final long DEFAULT_TIMEOUT = 5 * 60000;
     private Map<Short, Seed> seeds;
-    private AtomicInteger globalId = new AtomicInteger(0);
+    private Map<Short, Long> history;
+    private AtomicInteger globalId;
 
     public Set<FileInfo> getFiles() {
         return files;
@@ -19,18 +21,13 @@ public class TrackerDatabase {
     public TrackerDatabase() {
         seeds = new HashMap<>();
         files = new HashSet<>();
+        history = new HashMap<>();
+        globalId = new AtomicInteger(0);
     }
 
     public void addSeed(Seed seed) {
         seeds.put(seed.getPort(), seed);
-    }
-
-    public void removeSeed(Seed seed) {
-        seeds.remove(seed.getPort());
-    }
-
-    public void addFile(FileInfo info) {
-        files.add(info);
+        history.put(seed.getPort(), System.currentTimeMillis());
     }
 
     public void writeToFile(DataOutputStream file) throws IOException {
@@ -38,13 +35,14 @@ public class TrackerDatabase {
         for (FileInfo _file: files) {
             _file.writeToFile(file);
         }
-
     }
 
     public TrackerDatabase(DataInputStream file) throws IOException {
         int size = file.readInt();
         files = new HashSet<>();
         seeds = new HashMap<>();
+        history = new HashMap<>();
+        globalId = new AtomicInteger(size);
 
         for (int i = 0; i < size; i++) {
             files.add(new FileInfo(file));
@@ -54,7 +52,10 @@ public class TrackerDatabase {
     public List<Seed> getAllSeedsForFile(int id) {
         List<Seed> result = new ArrayList<>();
         for (Seed seed : seeds.values()) {
-            if (seed.findFile(id) != null) {
+            if (System.currentTimeMillis() - history.get(seed.getPort()) > DEFAULT_TIMEOUT) {
+                seeds.remove(seed.getPort());
+                history.remove(seed.getPort());
+            } else if (seed.findFile(id) != null) {
                 result.add(seed);
             }
         }
@@ -64,6 +65,7 @@ public class TrackerDatabase {
     public boolean updateInfo(int port, int id) {
         Seed seed = seeds.getOrDefault(port, null);
         if (seed == null) return false;
+        history.put((short)port, System.currentTimeMillis());
         if (seed.findFile(id) == null) {
             seed.addFile(new File(id));
         }

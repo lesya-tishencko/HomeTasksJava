@@ -1,6 +1,7 @@
 package ru.spbau.tishencko.torrent.query.tracker;
 
 import ru.spbau.tishencko.torrent.answer.tracker.UploadAnswer;
+import ru.spbau.tishencko.torrent.entity.Seed;
 import ru.spbau.tishencko.torrent.entity.TrackerDatabase;
 
 import java.io.DataInputStream;
@@ -9,15 +10,18 @@ import java.io.IOException;
 
 public class UploadQuery extends Query {
     private String name;
+    private Seed seed;
 
     @Override
     public UploadAnswer execute() throws IOException {
+        tracker.addSeed(seed);
         return new UploadAnswer(tracker.uploadFile(name, size));
     }
 
     private long size;
 
-    public UploadQuery(String name, long size) {
+    public UploadQuery(Seed seed, String name, long size) {
+        this.seed = seed;
         this.name = name;
         this.size = size;
     }
