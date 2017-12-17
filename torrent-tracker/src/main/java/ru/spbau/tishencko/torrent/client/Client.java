@@ -5,11 +5,10 @@ import ru.spbau.tishencko.torrent.entity.Seed;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Client implements AutoCloseable {
+    private static final long UPDATE_TIMEOUT = 1000000;
     private Socket clientSocket;
     private ClientType type;
     private final String host;
@@ -17,6 +16,8 @@ public class Client implements AutoCloseable {
     private Path storingDirectory;
     private Seed seed;
     private ClientInterpreter interpreter;
+    private Timer updateTimer;
+    private TimerTask timerTask;
 
     public Client(String host, int port) {
         this.host = host;
@@ -39,6 +40,19 @@ public class Client implements AutoCloseable {
         if (seed == null) {
             seed = new Seed(clientSocket.getInetAddress().getAddress(), (short) port);
         }
+
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    interpreter.executeUpdate();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        updateTimer = new Timer();
+        updateTimer.schedule(timerTask, 0, UPDATE_TIMEOUT);
         interpreter = new ClientInterpreter(clientSocket, scanner, seed);
     }
 
@@ -74,8 +88,9 @@ public class Client implements AutoCloseable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
+            timerTask.cancel();
+            updateTimer.cancel();
         }
     }
 }

@@ -37,7 +37,6 @@ public class ClientInterpreter {
     }
 
     public String interpret() throws IOException {
-        Answer clientAnswer;
         String command = scanner.next();
         int id;
         switch (command) {
@@ -108,16 +107,17 @@ public class ClientInterpreter {
                 sourcesAnswer.read(in);
                 sourcesAnswer.execute();
                 return String.valueOf(true);
-            case ":update":
-                UpdateQuery update = new UpdateQuery(seed.getPort(), seed.getCount(), seed.getFileIds());
-                update.write(out);
-                UpdateAnswer updateAnswer = new UpdateAnswer(new PrintWriter(System.out));
-                updateAnswer.read(in);
-                updateAnswer.execute();
-                return String.valueOf(true);
             default:
                 System.out.println("Unknown command");
                 return String.valueOf(true);
         }
+    }
+
+    public void executeUpdate() throws IOException {
+        UpdateQuery update = new UpdateQuery(seed.getPort(), seed.getCount(), seed.getFileIds());
+        update.write(out);
+        UpdateAnswer updateAnswer = new UpdateAnswer(new PrintWriter(System.out));
+        updateAnswer.read(in);
+        updateAnswer.execute();
     }
 }
