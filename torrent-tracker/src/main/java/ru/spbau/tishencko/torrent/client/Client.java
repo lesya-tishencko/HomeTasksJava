@@ -15,6 +15,7 @@ public class Client implements AutoCloseable {
     private final int port;
     private Path storingDirectory;
     private Seed seed;
+    private Seeder seeder;
     private ClientInterpreter interpreter;
     private Timer updateTimer;
     private TimerTask timerTask;
@@ -40,6 +41,7 @@ public class Client implements AutoCloseable {
         if (seed == null) {
             seed = new Seed(clientSocket.getInetAddress().getAddress(), (short) port);
         }
+        seeder = new Seeder(port, 100, seed);
 
         timerTask = new TimerTask() {
             @Override
@@ -63,6 +65,7 @@ public class Client implements AutoCloseable {
                 case "Possible changing state":
                     if (type == ClientType.Leecher) {
                         type = ClientType.Seeder;
+                        seeder.start();
                     }
                     break;
                 case "false":
@@ -76,6 +79,9 @@ public class Client implements AutoCloseable {
     public void close() {
         try {
             clientSocket.close();
+            if (type == ClientType.Seeder) {
+                seeder.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
