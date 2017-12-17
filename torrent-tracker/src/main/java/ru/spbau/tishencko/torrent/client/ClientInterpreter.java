@@ -1,20 +1,10 @@
 package ru.spbau.tishencko.torrent.client;
 
-import ru.spbau.tishencko.torrent.answer.client.Answer;
 import ru.spbau.tishencko.torrent.answer.client.GetAnswer;
 import ru.spbau.tishencko.torrent.answer.client.StatAnswer;
-import ru.spbau.tishencko.torrent.answer.tracker.ListAnswer;
-import ru.spbau.tishencko.torrent.answer.tracker.SourcesAnswer;
-import ru.spbau.tishencko.torrent.answer.tracker.UpdateAnswer;
-import ru.spbau.tishencko.torrent.answer.tracker.UploadAnswer;
-import ru.spbau.tishencko.torrent.entity.File;
 import ru.spbau.tishencko.torrent.entity.Seed;
 import ru.spbau.tishencko.torrent.query.client.GetQuery;
 import ru.spbau.tishencko.torrent.query.client.StatQuery;
-import ru.spbau.tishencko.torrent.query.tracker.ListQuery;
-import ru.spbau.tishencko.torrent.query.tracker.SourcesQuery;
-import ru.spbau.tishencko.torrent.query.tracker.UpdateQuery;
-import ru.spbau.tishencko.torrent.query.tracker.UploadQuery;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -70,54 +60,9 @@ public class ClientInterpreter {
                 getAnswer.read(in);
                 getAnswer.execute();
                 return "Possible changing state";
-            case ":list":
-                ListQuery list = new ListQuery();
-                list.write(out);
-                ListAnswer listAnswer = new ListAnswer(new PrintWriter(System.out));
-                listAnswer.read(in);
-                listAnswer.execute();
-                return String.valueOf(true);
-            case ":upload":
-                String name = scanner.next();
-                java.io.File newFile = new java.io.File(name);
-                long size = newFile.length();
-                File file;
-                try {
-                    file = new File(name, size);
-                } catch (IOException e) {
-                    System.out.println("File with this name doesn't exist");
-                    return String.valueOf(true);
-                }
-                UploadQuery upload = new UploadQuery(name, size);
-                upload.write(out);
-                UploadAnswer uploadAnswer = new UploadAnswer(seed, file);
-                uploadAnswer.read(in);
-                uploadAnswer.execute();
-                return "Possible changing state";
-            case ":sources":
-                try {
-                    id = Integer.valueOf(scanner.next());
-                } catch (NumberFormatException e) {
-                    System.out.println("Unknown type of file's id");
-                    return String.valueOf(true);
-                }
-                SourcesQuery sources = new SourcesQuery(id);
-                sources.write(out);
-                SourcesAnswer sourcesAnswer = new SourcesAnswer(new PrintWriter(System.out));
-                sourcesAnswer.read(in);
-                sourcesAnswer.execute();
-                return String.valueOf(true);
             default:
                 System.out.println("Unknown command");
                 return String.valueOf(true);
         }
-    }
-
-    public void executeUpdate() throws IOException {
-        UpdateQuery update = new UpdateQuery(seed.getPort(), seed.getCount(), seed.getFileIds());
-        update.write(out);
-        UpdateAnswer updateAnswer = new UpdateAnswer(new PrintWriter(System.out));
-        updateAnswer.read(in);
-        updateAnswer.execute();
     }
 }

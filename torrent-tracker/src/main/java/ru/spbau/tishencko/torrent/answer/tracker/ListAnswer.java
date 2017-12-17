@@ -8,7 +8,7 @@ public class ListAnswer extends Answer {
     private String[] name;
     private long[] size;
 
-    private Writer writer;
+    private PrintWriter writer;
 
     public ListAnswer(int count, int[] id, String[] name, long[] size) {
         this.count = count;
@@ -21,7 +21,7 @@ public class ListAnswer extends Answer {
 
     }
 
-    public ListAnswer(Writer writer) {
+    public ListAnswer(PrintWriter writer) {
         this.writer = writer;
     }
 
@@ -51,10 +51,12 @@ public class ListAnswer extends Answer {
     @Override
     public void execute() throws IOException {
         for (int i = 0; i < count; i++) {
-            writer.write(id[i]);
-            writer.write(name[i]);
-            writer.write((int)size[i]);
-            writer.flush();
+            writer.print(id[i]);
+            writer.print(' ');
+            writer.print(name[i]);
+            writer.print(' ');
+            writer.println(size[i]);
         }
+        writer.flush();
     }
 }

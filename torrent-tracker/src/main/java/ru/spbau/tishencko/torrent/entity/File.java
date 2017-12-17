@@ -4,11 +4,12 @@ import java.io.*;
 import java.util.*;
 
 public class File {
-    private static int PART_SIZE = 10000000;
+    private static int PART_SIZE = 1000;//0000;
     private FileInfo info;
     private List<Part> parts;
 
     public File(String name, long size) throws IOException {
+        info = new FileInfo();
         info.name = name;
         info.size = size;
         parts = new ArrayList<Part>();

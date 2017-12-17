@@ -4,7 +4,6 @@ import java.io.*;
 
 public class UpdateAnswer extends Answer {
     private boolean status;
-    private Writer writer;
 
     public UpdateAnswer(boolean status) {
         this.status = status;
@@ -12,10 +11,6 @@ public class UpdateAnswer extends Answer {
 
     public UpdateAnswer() {
 
-    }
-
-    public UpdateAnswer(PrintWriter printWriter) {
-        this.writer = writer;
     }
 
     @Override
@@ -30,7 +25,6 @@ public class UpdateAnswer extends Answer {
 
     @Override
     public void execute() throws IOException {
-        writer.write(String.valueOf(status));
-        writer.flush();
+
     }
 }

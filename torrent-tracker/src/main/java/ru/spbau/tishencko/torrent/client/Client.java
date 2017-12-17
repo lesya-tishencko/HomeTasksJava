@@ -1,6 +1,8 @@
 package ru.spbau.tishencko.torrent.client;
 
 import ru.spbau.tishencko.torrent.entity.Seed;
+import ru.spbau.tishencko.torrent.tracker.Tracker;
+import ru.spbau.tishencko.torrent.tracker.TrackerInterpreter;
 
 import java.io.*;
 import java.net.Socket;
@@ -11,23 +13,21 @@ public class Client implements AutoCloseable {
     private static final long UPDATE_TIMEOUT = 1000000;
     private Socket clientSocket;
     private ClientType type;
-    private final String host;
     private final int port;
     private Path storingDirectory;
     private Seed seed;
     private Seeder seeder;
-    private ClientInterpreter interpreter;
+    private TrackerInterpreter interpreter;
     private Timer updateTimer;
     private TimerTask timerTask;
 
-    public Client(String host, int port) {
-        this.host = host;
+    public Client(String host, int port) throws IOException {
+        clientSocket = new Socket(host, Tracker.port);
         this.port = port;
         type = ClientType.Leecher;
     }
 
     public void connect(Scanner scanner, Path storingDirectory) throws IOException {
-        clientSocket = new Socket(host, port);
         this.storingDirectory = storingDirectory;
         File file = new File(storingDirectory.toString());
         String name = storingDirectory.toString() + "/" + "client" + String.valueOf(port);
@@ -42,6 +42,7 @@ public class Client implements AutoCloseable {
             seed = new Seed(clientSocket.getInetAddress().getAddress(), (short) port);
         }
         seeder = new Seeder(port, 100, seed);
+        interpreter = new TrackerInterpreter(clientSocket, scanner, seed);
 
         timerTask = new TimerTask() {
             @Override
@@ -54,8 +55,6 @@ public class Client implements AutoCloseable {
             }
         };
         updateTimer = new Timer();
-        updateTimer.schedule(timerTask, 0, UPDATE_TIMEOUT);
-        interpreter = new ClientInterpreter(clientSocket, scanner, seed);
     }
 
     public void run() throws IOException {
@@ -66,6 +65,7 @@ public class Client implements AutoCloseable {
                     if (type == ClientType.Leecher) {
                         type = ClientType.Seeder;
                         seeder.start();
+                        updateTimer.schedule(timerTask, 0, UPDATE_TIMEOUT);
                     }
                     break;
                 case "false":

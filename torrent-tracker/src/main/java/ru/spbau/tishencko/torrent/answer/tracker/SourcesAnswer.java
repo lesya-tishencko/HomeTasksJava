@@ -7,7 +7,7 @@ public class SourcesAnswer extends Answer {
     private byte[][] ip;
     private short[] clientPort;
 
-    private Writer writer;
+    private PrintWriter writer;
 
     public SourcesAnswer(int size, byte[][] ip, short[] clientPort) {
         this.size = size;
@@ -19,7 +19,7 @@ public class SourcesAnswer extends Answer {
 
     }
 
-    public SourcesAnswer(Writer writer) {
+    public SourcesAnswer(PrintWriter writer) {
         this.writer = writer;
     }
 
@@ -50,9 +50,10 @@ public class SourcesAnswer extends Answer {
     @Override
     public void execute() throws IOException {
         for (int i = 0; i < size; i++) {
-            writer.write(ip[i].toString());
-            writer.write((int)clientPort[i]);
-            writer.flush();
+            writer.print(ip[i]);
+            writer.print(' ');
+            writer.println(clientPort[i]);
         }
+        writer.flush();
     }
 }

@@ -2,22 +2,19 @@ package ru.spbau.tishencko.torrent.answer.client;
 
 import ru.spbau.tishencko.torrent.entity.Seed;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 
 public class StatAnswer extends Answer {
     private int count;
     private int[] part;
-    private Writer writer;
+    private PrintWriter writer;
 
     public StatAnswer(int count, int[] part) {
         this.count = count;
         this.part = part;
     }
 
-    public StatAnswer(Seed seed, Writer writer) {
+    public StatAnswer(Seed seed, PrintWriter writer) {
         this.seed = seed;
         this.writer = writer;
     }
@@ -42,7 +39,7 @@ public class StatAnswer extends Answer {
     @Override
     public void execute() throws IOException {
         for (int i = 0; i < count; i++) {
-            writer.write(part[i]);
+            writer.println(part[i]);
         }
         writer.flush();
     }

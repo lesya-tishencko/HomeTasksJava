@@ -13,12 +13,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Tracker implements AutoCloseable {
-    private static final int port = 80;
+    public static final int port = 80;
     private final Path storingDirectory;
     private final ExecutorService clientPool;
     private TrackerDatabase trackerDatabase;
 
-    Tracker(int maxNumberOfClients, Path storingDirectory) {
+    public Tracker(int maxNumberOfClients, Path storingDirectory) {
         this.storingDirectory = storingDirectory;
         clientPool = Executors.newFixedThreadPool(maxNumberOfClients);
     }

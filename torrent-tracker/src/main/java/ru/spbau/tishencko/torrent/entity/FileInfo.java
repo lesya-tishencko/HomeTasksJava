@@ -9,6 +9,8 @@ public class FileInfo {
     long size;
     String name;
 
+    public FileInfo() {}
+
     public FileInfo(int id, String name, long size) {
         this.id = id;
         this.name = name;
