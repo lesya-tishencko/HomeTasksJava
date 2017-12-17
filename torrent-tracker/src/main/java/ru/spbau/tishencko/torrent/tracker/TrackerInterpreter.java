@@ -75,6 +75,15 @@ public class TrackerInterpreter {
                 sourcesAnswer.read(in);
                 sourcesAnswer.execute();
                 return String.valueOf(true);
+            case ":seed":
+                String host = scanner.next();
+                try {
+                    id = Integer.valueOf(scanner.next());
+                } catch (NumberFormatException e) {
+                    System.out.println("Unknown type of client's port");
+                    return String.valueOf(true);
+                }
+                return "Query to seed:" + host + "," + String.valueOf(id);
             default:
                 System.out.println("Unknown command");
                 return String.valueOf(true);

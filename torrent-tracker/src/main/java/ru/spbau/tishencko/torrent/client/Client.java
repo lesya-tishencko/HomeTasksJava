@@ -18,17 +18,18 @@ public class Client implements AutoCloseable {
     private Seed seed;
     private Seeder seeder;
     private TrackerInterpreter interpreter;
-    private ClientInterpreter clientInterpreter;
     private Timer updateTimer;
     private TimerTask timerTask;
+    private Scanner scanner;
 
-    public Client(String host, int port) throws IOException {
+    public Client(String host, int port, Scanner scanner) throws IOException {
         clientSocket = new Socket(host, Tracker.port);
         this.port = port;
         type = ClientType.Leecher;
+        this.scanner = scanner;
     }
 
-    public void connect(Scanner scanner, Path storingDirectory) throws IOException {
+    public void connect(Path storingDirectory) throws IOException {
         this.storingDirectory = storingDirectory;
         File file = new File(storingDirectory.toString());
         String name = storingDirectory.toString() + "/" + "client" + String.valueOf(port);
@@ -61,6 +62,20 @@ public class Client implements AutoCloseable {
     public void run() throws IOException {
         while (true) {
             String statMessage = interpreter.interpret();
+            if (statMessage.startsWith("Query to seed:")) {
+                int hostPos = statMessage.indexOf(':') + 1;
+                int portPos = statMessage.indexOf(',') + 1;
+                String host = statMessage.substring(hostPos, portPos - hostPos);
+                int port = Integer.valueOf(statMessage.substring(portPos));
+                ClientInterpreter clientInterpreter = new ClientInterpreter(new Socket(host, port), scanner, seed);
+                while (true) {
+                    statMessage = clientInterpreter.interpret();
+                    if (statMessage.equals("false")) {
+                        statMessage = "true";
+                        break;
+                    }
+                }
+            }
             switch (statMessage) {
                 case "Possible changing state":
                     if (type == ClientType.Leecher) {
