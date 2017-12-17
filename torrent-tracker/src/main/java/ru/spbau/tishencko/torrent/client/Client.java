@@ -18,6 +18,7 @@ public class Client implements AutoCloseable {
     private Seed seed;
     private Seeder seeder;
     private TrackerInterpreter interpreter;
+    private ClientInterpreter clientInterpreter;
     private Timer updateTimer;
     private TimerTask timerTask;
 
