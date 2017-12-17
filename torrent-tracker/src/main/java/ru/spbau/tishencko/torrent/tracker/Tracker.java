@@ -16,7 +16,7 @@ public class Tracker implements AutoCloseable {
     public static final int port = 80;
     private final Path storingDirectory;
     private final ExecutorService clientPool;
-    private TrackerDatabase trackerDatabase;
+    TrackerDatabase trackerDatabase;
 
     public Tracker(int maxNumberOfClients, Path storingDirectory) {
         this.storingDirectory = storingDirectory;

@@ -17,10 +17,6 @@ public class Part {
         this.content = content;
     }
 
-    public Part() {
-        size = 0;
-    }
-
     public Part(DataInputStream file) throws IOException {
         size = file.readInt();
         content = new byte[size];

@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Seeder implements AutoCloseable {
+class Seeder implements AutoCloseable {
     private final int port;
     private final ExecutorService clientPool;
     private final Seed seed;
@@ -28,7 +28,7 @@ public class Seeder implements AutoCloseable {
         isWorking = true;
         Runnable seederTask = () -> {
             try (ServerSocket serverSocket = new ServerSocket(port)) {
-                while (true) {
+                while (isWorking) {
                     Socket clientSocket = serverSocket.accept();
                     Runnable task = () -> {
                         try {

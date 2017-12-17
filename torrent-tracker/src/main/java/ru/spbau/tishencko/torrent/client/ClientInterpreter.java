@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class ClientInterpreter {
+class ClientInterpreter {
     private final Scanner scanner;
     private final DataInputStream in;
     private final DataOutputStream out;

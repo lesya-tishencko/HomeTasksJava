@@ -57,7 +57,7 @@ public class TrackerDatabase {
         return result;
     }
 
-    public boolean updateInfo(int port, byte[] address, int id) throws IOException {
+    public boolean updateInfo(int port, byte[] address, int id) {
         Seed seed = seeds.getOrDefault(port, null);
         if (seed == null) {
             seed = new Seed(address, (short)port);
@@ -70,7 +70,7 @@ public class TrackerDatabase {
         return true;
     }
 
-    public int uploadFile(String name, long size) throws IOException {
+    public int uploadFile(String name, long size) {
         files.add(new FileInfo(globalId.get(), name, size));
         return globalId.getAndIncrement();
     }

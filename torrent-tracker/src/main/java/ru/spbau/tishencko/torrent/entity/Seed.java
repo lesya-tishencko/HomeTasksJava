@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Seed {
-    private byte[] ip;
+    private final byte[] ip;
     private short port;
 
-    private Map<Integer, File> files = new HashMap<>();
+    private final Map<Integer, File> files = new HashMap<>();
 
     public Seed(byte[] ip, short port) {
         this.ip = ip;
@@ -60,6 +60,6 @@ public class Seed {
     }
 
     public int[] getFileIds() {
-        return files.values().stream().mapToInt(file -> file.getId()).toArray();
+        return files.values().stream().mapToInt(File::getId).toArray();
     }
 }

@@ -4,57 +4,62 @@ import java.io.*;
 import java.util.*;
 
 public class File {
-    public static int PART_SIZE = 10000000;
+    public static final int PART_SIZE = 10000000;
     private FileInfo info = new FileInfo();
-    private List<Part> parts;
+    private Part[] parts;
 
     public File(String name, long size) throws IOException {
         info.name = name;
         info.size = size;
-        parts = new ArrayList<Part>();
+        parts = new Part[0];
         BufferedInputStream stream = new BufferedInputStream(new FileInputStream(name));
-        while (parts.size() * PART_SIZE < size) {
+        while (parts.length * PART_SIZE < size) {
             byte[] part = new byte[PART_SIZE];
             int sizePart = stream.read(part, 0, PART_SIZE);
-            parts.add(new Part(part, sizePart));
+            parts = Arrays.copyOf(parts, parts.length + 1);
+            parts[parts.length - 1] = new Part(part, sizePart);
         }
     }
 
     public File(int id) {
         info.id = id;
+        parts = new Part[0];
     }
 
-    public void setId(int id) {
-        info.id = id;
+    public File(DataInputStream file) throws IOException {
+        info = new FileInfo(file);
+        parts = new Part[(int)(info.size / PART_SIZE)];
+        for (int i = 0; i < parts.length; i++) {
+            parts[i] = new Part(file);
+        }
     }
 
     public void writePart(int number, byte[] content, int sizePart) {
-        parts.set(number, new Part(content, sizePart));
+        if (parts.length < number) {
+            parts = Arrays.copyOf(parts, number + 1);
+        }
+        parts[number] = new Part(content, sizePart);
     }
 
     public int getId() {
         return info.getId();
     }
 
-    public void writeToFile(DataOutputStream file) throws IOException {
-        info.writeToFile(file);
-        for (int i = 0; i < parts.size(); i++) {
-            parts.get(i).writeToFile(file);
-        }
+    public void setId(int id) {
+        info.id = id;
     }
 
-    public File(DataInputStream file) throws IOException {
-        info = new FileInfo(file);
-        parts = new ArrayList<>((int)(info.size / PART_SIZE));
-        for (int i = 0; i < parts.size(); i++) {
-            parts.set(i, new Part(file));
+    public void writeToFile(DataOutputStream file) throws IOException {
+        info.writeToFile(file);
+        for (Part part : parts) {
+            part.writeToFile(file);
         }
     }
 
     public List<Integer> availableParts() {
         List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < parts.size(); i++) {
-           if (parts.get(i).getSize() > 0) {
+        for (int i = 0; i < parts.length; i++) {
+           if (parts[i].getSize() > 0) {
                result.add(i);
            }
         }
@@ -62,6 +67,6 @@ public class File {
     }
 
     public Part getPart(int number) {
-        return parts.get(number);
+        return parts[number];
     }
 }

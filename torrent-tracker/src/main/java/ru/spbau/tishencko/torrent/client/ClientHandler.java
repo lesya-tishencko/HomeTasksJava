@@ -13,7 +13,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ClientHandler {
+class ClientHandler {
     private final DataInputStream in;
     private final DataOutputStream out;
     private final Seed seed;

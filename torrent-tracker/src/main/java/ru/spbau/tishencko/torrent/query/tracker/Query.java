@@ -8,7 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public abstract class Query {
-    protected TrackerDatabase tracker;
+    TrackerDatabase tracker;
 
     public abstract void write(DataOutputStream out) throws IOException;
 

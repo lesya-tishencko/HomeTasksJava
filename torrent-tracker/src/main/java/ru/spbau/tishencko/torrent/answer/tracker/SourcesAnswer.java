@@ -16,10 +16,6 @@ public class SourcesAnswer extends Answer {
         this.clientPort = clientPort;
     }
 
-    public SourcesAnswer() {
-
-    }
-
     public SourcesAnswer(PrintWriter writer) {
         this.writer = writer;
     }

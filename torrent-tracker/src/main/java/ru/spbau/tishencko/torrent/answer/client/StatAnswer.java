@@ -1,6 +1,6 @@
 package ru.spbau.tishencko.torrent.answer.client;
 
-import ru.spbau.tishencko.torrent.entity.Seed;
+import ru.spbau.tishencko.torrent.entity.*;
 
 import java.io.*;
 
@@ -37,7 +37,7 @@ public class StatAnswer extends Answer {
     }
 
     @Override
-    public void execute() throws IOException {
+    public void execute() {
         for (int i = 0; i < count; i++) {
             writer.println(part[i]);
         }

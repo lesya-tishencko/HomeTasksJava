@@ -11,7 +11,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 
-public class TrackerHandler {
+class TrackerHandler {
     private final DataInputStream in;
     private final DataOutputStream out;
     private final TrackerDatabase tracker;

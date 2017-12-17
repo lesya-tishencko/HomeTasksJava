@@ -7,7 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public abstract class Query {
-    protected int id;
+    int id;
 
     public abstract void write(DataOutputStream out) throws IOException;
 

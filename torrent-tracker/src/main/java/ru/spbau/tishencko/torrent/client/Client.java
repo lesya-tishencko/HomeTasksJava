@@ -8,12 +8,13 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Client implements AutoCloseable {
     private static final long UPDATE_TIMEOUT = 1000000;
+    private final int port;
     private Socket clientSocket;
     private ClientType type;
-    private final int port;
     private Path storingDirectory;
     private Seed seed;
     private Seeder seeder;
@@ -107,9 +108,11 @@ public class Client implements AutoCloseable {
         try {
             clientSocket.close();
             if (type == ClientType.Seeder) {
+                seeder.tryToStop();
+                TimeUnit.SECONDS.sleep(2);
                 seeder.close();
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
             if (type == ClientType.Seeder) {

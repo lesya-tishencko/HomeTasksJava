@@ -47,7 +47,7 @@ public class TrackerInterpreter {
             case ":upload":
                 String name = scanner.next();
                 File file;
-                long size = 0;
+                long size;
                 try {
                     java.io.File newFile = new java.io.File(name);
                     size = newFile.length();
