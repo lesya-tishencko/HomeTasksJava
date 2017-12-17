@@ -28,7 +28,7 @@ public class Client implements AutoCloseable {
     public void connect(Scanner scanner, Path storingDirectory) throws IOException {
         clientSocket = new Socket(host, port);
         this.storingDirectory = storingDirectory;
-        File file = new File(this.storingDirectory.toString());
+        File file = new File(storingDirectory.toString());
         String name = storingDirectory.toString() + "/" + "client" + String.valueOf(port);
         if (file.exists()) {
             List<String> files = Arrays.asList(file.list());
