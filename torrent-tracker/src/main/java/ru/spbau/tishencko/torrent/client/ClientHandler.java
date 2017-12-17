@@ -21,7 +21,6 @@ public class ClientHandler {
     public ClientHandler(Socket socket, Seed seed) throws IOException {
         in = new DataInputStream(socket.getInputStream());
         out = new DataOutputStream(socket.getOutputStream());
-        //seed = new Seed(socket.getInetAddress().getAddress(), (short)socket.getPort());
         this.seed = seed;
     }
 

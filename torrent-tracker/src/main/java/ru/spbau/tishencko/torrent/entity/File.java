@@ -4,12 +4,11 @@ import java.io.*;
 import java.util.*;
 
 public class File {
-    private static int PART_SIZE = 1000;//0000;
-    private FileInfo info;
+    public static int PART_SIZE = 10000000;
+    private FileInfo info = new FileInfo();
     private List<Part> parts;
 
     public File(String name, long size) throws IOException {
-        info = new FileInfo();
         info.name = name;
         info.size = size;
         parts = new ArrayList<Part>();
@@ -29,8 +28,7 @@ public class File {
         info.id = id;
     }
 
-    public void writePart(int number, byte[] content) {
-        int sizePart = number == parts.size() - 1 ? (int)(info.size % PART_SIZE) : PART_SIZE;
+    public void writePart(int number, byte[] content, int sizePart) {
         parts.set(number, new Part(content, sizePart));
     }
 

@@ -65,14 +65,25 @@ public class Client implements AutoCloseable {
             if (statMessage.startsWith("Query to seed:")) {
                 int hostPos = statMessage.indexOf(':') + 1;
                 int portPos = statMessage.indexOf(',') + 1;
-                String host = statMessage.substring(hostPos, portPos - hostPos);
+                String host = statMessage.substring(hostPos, portPos - 1);
                 int port = Integer.valueOf(statMessage.substring(portPos));
-                ClientInterpreter clientInterpreter = new ClientInterpreter(new Socket(host, port), scanner, seed);
-                while (true) {
+                Socket toSeed = new Socket(host, port);
+                ClientInterpreter clientInterpreter = new ClientInterpreter(toSeed, scanner, seed);
+                boolean isRun = true;
+                while (isRun) {
                     statMessage = clientInterpreter.interpret();
-                    if (statMessage.equals("false")) {
-                        statMessage = "true";
-                        break;
+                    switch (statMessage) {
+                        case "Possible changing state":
+                            if (type == ClientType.Leecher) {
+                                type = ClientType.Seeder;
+                                seeder.start();
+                                updateTimer.schedule(timerTask, 0, UPDATE_TIMEOUT);
+                            }
+                            break;
+                        case "false":
+                            toSeed.close();
+                            statMessage = "true";
+                            isRun = false;
                     }
                 }
             }

@@ -11,6 +11,7 @@ public class UpdateQuery extends Query {
     private short port;
     private int count;
     private int[] fileIds;
+    private byte[] address;
 
     public UpdateQuery(short port, int count, int[] fileIds) {
         this.port = port;
@@ -18,8 +19,9 @@ public class UpdateQuery extends Query {
         this.fileIds = fileIds;
     }
 
-    public UpdateQuery(TrackerDatabase tracker) {
+    public UpdateQuery(TrackerDatabase tracker, byte[] address) {
         this.tracker = tracker;
+        this.address = address;
     }
 
     @Override
@@ -43,9 +45,9 @@ public class UpdateQuery extends Query {
     }
 
     @Override
-    public UpdateAnswer execute() {
+    public UpdateAnswer execute() throws IOException {
         for (int i = 0; i < count; i++) {
-            if (!tracker.updateInfo(port, fileIds[i])) {
+            if (tracker.updateInfo(port, address, fileIds[i])) {
                 return new UpdateAnswer(false);
             }
         }

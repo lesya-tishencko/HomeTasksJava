@@ -25,11 +25,6 @@ public class TrackerDatabase {
         globalId = new AtomicInteger(0);
     }
 
-    public void addSeed(Seed seed) {
-        seeds.put(seed.getPort(), seed);
-        history.put(seed.getPort(), System.currentTimeMillis());
-    }
-
     public void writeToFile(DataOutputStream file) throws IOException {
         file.writeInt(files.size());
         for (FileInfo _file: files) {
@@ -62,9 +57,12 @@ public class TrackerDatabase {
         return result;
     }
 
-    public boolean updateInfo(int port, int id) {
+    public boolean updateInfo(int port, byte[] address, int id) throws IOException {
         Seed seed = seeds.getOrDefault(port, null);
-        if (seed == null) return false;
+        if (seed == null) {
+            seed = new Seed(address, (short)port);
+            seeds.put(seed.getPort(), seed);
+        }
         history.put((short)port, System.currentTimeMillis());
         if (seed.findFile(id) == null) {
             seed.addFile(new File(id));

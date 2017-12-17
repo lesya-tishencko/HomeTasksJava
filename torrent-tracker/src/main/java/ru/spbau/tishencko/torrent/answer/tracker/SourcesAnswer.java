@@ -1,6 +1,7 @@
 package ru.spbau.tishencko.torrent.answer.tracker;
 
 import java.io.*;
+import java.net.InetAddress;
 
 public class SourcesAnswer extends Answer {
     private int size;
@@ -50,7 +51,7 @@ public class SourcesAnswer extends Answer {
     @Override
     public void execute() throws IOException {
         for (int i = 0; i < size; i++) {
-            writer.print(ip[i]);
+            writer.print(InetAddress.getByAddress(ip[i]));
             writer.print(' ');
             writer.println(clientPort[i]);
         }

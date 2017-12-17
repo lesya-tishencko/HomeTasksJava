@@ -15,8 +15,10 @@ public class TrackerHandler {
     private final DataInputStream in;
     private final DataOutputStream out;
     private final TrackerDatabase tracker;
+    private final Socket socket;
 
     public TrackerHandler(Socket socket, TrackerDatabase tracker) throws IOException {
+        this.socket = socket;
         in = new DataInputStream(socket.getInputStream());
         out = new DataOutputStream(socket.getOutputStream());
         this.tracker = tracker;
@@ -48,7 +50,7 @@ public class TrackerHandler {
                 sources.read(in);
                 return sources;
             case 4:
-                UpdateQuery update = new UpdateQuery(tracker);
+                UpdateQuery update = new UpdateQuery(tracker, socket.getInetAddress().getAddress());
                 update.read(in);
                 return update;
             default:

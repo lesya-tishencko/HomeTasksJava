@@ -56,7 +56,7 @@ public class TrackerInterpreter {
                     System.out.println("File with this name doesn't exist");
                     return String.valueOf(true);
                 }
-                UploadQuery upload = new UploadQuery(seed, name, size);
+                UploadQuery upload = new UploadQuery(name, size);
                 upload.write(out);
                 UploadAnswer uploadAnswer = new UploadAnswer(seed, file);
                 uploadAnswer.read(in);

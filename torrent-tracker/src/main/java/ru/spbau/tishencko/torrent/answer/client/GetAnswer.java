@@ -1,10 +1,13 @@
 package ru.spbau.tishencko.torrent.answer.client;
 
+import ru.spbau.tishencko.torrent.entity.File;
+import ru.spbau.tishencko.torrent.entity.Part;
 import ru.spbau.tishencko.torrent.entity.Seed;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class GetAnswer extends Answer {
     private byte[] content;
@@ -28,11 +31,24 @@ public class GetAnswer extends Answer {
 
     @Override
     public void read(DataInputStream in) throws IOException {
+        content = new byte[File.PART_SIZE];
         in.read(content);
+        int i = File.PART_SIZE - 1;
+        while (i >= 0 && content[i] == 0) {
+            i--;
+        }
+        if (i != File.PART_SIZE - 1) {
+            content = Arrays.copyOf(content, i + 1);
+        }
     }
 
     @Override
     public void execute() {
-        seed.findFile(id).writePart(part, content);
+        File file = seed.findFile(id);
+        if (file == null) {
+            seed.addFile(new File(0));
+        }
+
+        seed.findFile(id).writePart(part, content, content.length);
     }
 }
