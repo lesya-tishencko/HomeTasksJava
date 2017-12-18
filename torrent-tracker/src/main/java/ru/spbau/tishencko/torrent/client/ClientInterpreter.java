@@ -11,6 +11,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 class ClientInterpreter {
@@ -26,7 +27,7 @@ class ClientInterpreter {
         this.seed = seed;
     }
 
-    public String interpret() throws IOException {
+    public String interpret() throws IOException, NoSuchElementException {
         String command = scanner.next();
         int id;
         switch (command) {

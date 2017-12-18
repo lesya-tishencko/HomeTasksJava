@@ -62,7 +62,13 @@ public class Client implements AutoCloseable {
 
     public void run() throws IOException {
         while (true) {
-            String statMessage = interpreter.interpret();
+            String statMessage;
+            if (clientSocket.isClosed()) return;
+            try {
+                statMessage = interpreter.interpret();
+            } catch (NoSuchElementException e) {
+                return;
+            }
             if (statMessage.startsWith("Query to seed:")) {
                 int hostPos = statMessage.indexOf(':') + 1;
                 int portPos = statMessage.indexOf(',') + 1;
@@ -72,7 +78,11 @@ public class Client implements AutoCloseable {
                 ClientInterpreter clientInterpreter = new ClientInterpreter(toSeed, scanner, seed);
                 boolean isRun = true;
                 while (isRun) {
-                    statMessage = clientInterpreter.interpret();
+                    try {
+                        statMessage = clientInterpreter.interpret();
+                    } catch (NoSuchElementException e) {
+                        return;
+                    }
                     switch (statMessage) {
                         case "Possible changing state":
                             if (type == ClientType.Leecher) {
@@ -99,7 +109,6 @@ public class Client implements AutoCloseable {
                 case "false":
                     close();
             }
-            if (clientSocket.isClosed()) return;
         }
     }
 
